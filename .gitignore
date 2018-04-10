@@ -1,0 +1,8 @@
+build/
+packer_cache/
+private/
+
+*.box
+isos/*.iso
+*-variables.json
+mkisofs.exe
