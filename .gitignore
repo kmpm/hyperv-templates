@@ -2,6 +2,8 @@ build_cache/
 packer_cache/
 private/
 
+packerlog.txt
+
 *.box
 isos/*.iso
 *-variables.json
