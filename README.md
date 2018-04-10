@@ -1,6 +1,7 @@
 HyperV-Templates
 ================
-Packer templates optimized for Hyper-V
+Packer templates optimized for Hyper-V and for running the 
+build on Windows with PowerShell.
 
 Based upon work done by https://github.com/jacqinthebox/packer-templates
 
