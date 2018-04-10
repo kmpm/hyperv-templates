@@ -13,10 +13,9 @@
       "winrm_timeout": "8h",
       "shutdown_command": "C:/Scripts/sysprep.cmd",
       "shutdown_timeout": "15m",
-      "ram_size": 4096,
-      "cpu": 4,
+      "ram_size": 2048,
+      "cpu": 2,
       "generation": 2,
-      "switch_name": "Standardväxel",
       "secondary_iso_images": [
         "{{ user `build_dir` }}/answer.iso"
       ],
@@ -100,3 +99,4 @@
     "iso_checksum": "70721288bbcdfe3239d8f8c0fae55f1f"
   }
 }
+
