@@ -5,9 +5,18 @@ build on Windows with PowerShell.
 
 Based upon work done by https://github.com/jacqinthebox/packer-templates
 
+
 # Dependencies
 You will mkisofs.exe in this project directory. It can be downloaded at
 https://opensourcepack.blogspot.se/p/cdrtools.html
+
+
+# Using
+
+If you want transformations check 
+https://github.com/cloudbase/windows-openstack-imaging-tools/blob/master/Unattend.xslt
+for examples
+
 
 # Utilities
 ```powershell
@@ -23,3 +32,8 @@ certutil -hashfile .\isos\14393.0.161119-1705.RS1_REFRESH_SERVER_EVAL_X64FRE_EN-
     }
 }
 ```
+
+
+
+
+
