@@ -49,11 +49,13 @@ $c | ForEach-Object {
     $_ -replace 'Finish UEFI compatible -->','<!-- Finish UEFI compatible -->' 
 } | Set-Content -Path $textFile
 
-& .\mkisofs.exe -r -iso-level 4 -UDF -o $outputFile $isoFolder
-
-if (test-path $isoFolder){
-    remove-item $isoFolder -Force -Recurse
+$modifierFile=Join-Path -Resolve $projRoot 'modifiers\addkey.xslt'
+if (Test-Path $modifierFile) {
+    Write-Host "Transforming answer file"
+    Set-XslTransform -Verbose $modifierFile $textFile | Set-Content -Path $textFile
 }
+
+& .\mkisofs.exe -r -iso-level 4 -UDF -o $outputFile $isoFolder
 
 if (-Not (test-path $outputFile)) {
     exit 123

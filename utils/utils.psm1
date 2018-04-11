@@ -5,7 +5,7 @@
 # . .\utils\xmlutils.ps1 ; Transform-Xml -Verbose .\addkey.xslt .\win\answer_files\2016\Autounattend.xml
 # (Get-Content .\win\answer_files\2016\Autounattend.xml) -as [xml] | Transform-Xml -Verbose .\addkey.xslt
 
-function Set-XmlTransform {
+function Set-XslTransform {
     [CmdletBinding()]
     param(
         [string]
@@ -15,9 +15,8 @@ function Set-XmlTransform {
         [string[]]
         $xmlPath
     )
-        
     BEGIN {
-
+        Set-StrictMode -Version Latest
         function applyStylesheetToXml([xml]$xml) {
             Write-Verbose "Applying Stylesheet"
             $xslt_settings = New-Object System.Xml.Xsl.XsltSettings;
@@ -32,9 +31,9 @@ function Set-XmlTransform {
         }
 
         function applyStylesheetToXmlFile($xml) {
-            Write-Verbose "Applying Stylesheet to File '$xml'" 
+            Write-Verbose "Applying Stylesheet '$xsl' to File '$xml'" 
             $rpath = resolve-path $xml
-            # $result = nxslt2.exe $rpath $stylesheetPath
+            
             # [string]::join([environment]::newline, $result)
             
             $xslt_settings = New-Object System.Xml.Xsl.XsltSettings;
@@ -42,30 +41,37 @@ function Set-XmlTransform {
             $xslt_settings.EnableScript = 1;
             $xargs = New-Object System.Xml.Xsl.XsltArgumentList;
             $xargs.AddParam('productKey', '', 'ABC-123')
+            $xargs.AddParam('inputLocale', '', 'sv-SE')
+            $xargs.AddParam('userLocale', '', 'sv-SE')
 
             $xslt = New-Object System.Xml.Xsl.XslCompiledTransform
             $xslt.Load($xsl,$xslt_settings,$XmlUrlResolver);
           
-            # $stream = New-Object IO.FileStream $output ,([IO.FileMode]::Create)
-            $stream = New-Object System.IO.MemoryStream
-            
+            # $stream = New-Object IO.FileStream 'C:\code\packers\hyperv-templates\test.xml' ,([IO.FileMode]::Create)
+            $stream = New-Object System.IO.MemoryStream       
             $writer = New-Object System.IO.StreamWriter $stream
-            $writer.Write("foo");
-            $writer.Flush()
+     
             try {
                 
-                # $xslt.Transform($rpath, $xargs, $stream);
-                Write-Verbose "size $($stream.Length)"
+                $xslt.Transform($rpath, $xargs, $writer);
+                $writer.Flush()
+                # Write-Verbose "size $($stream.Length)"
+                $newpos = $stream.Seek(0, "Begin")
                 $reader = New-Object System.IO.StreamReader $stream,'UFT8'
-                $stream.Flush()
                 $result = $reader.ReadToEnd()
-                Write-Verbose $result
+                # Write-Verbose $result
                 if ($result -is [Array]) {
                     Write-Verbose "is array"
                     [string]::join([environment]::newline, $result)
                 }
+                else {
+                    $result
+                }
+
+                # write-host $result.Substring(0, 10)
+                # return $result
             
-                Write-Verbose "Result: '$($result.ToString())'"
+                # Write-Verbose "Result: '$($result.ToString())'"
             }
             catch {
                 Write-Host "Exception $_.Exception.Message" -ForegroundColor Green
@@ -78,7 +84,6 @@ function Set-XmlTransform {
     }
    
     PROCESS {   
-        Write-Verbose "Tada"
         if ($_) {
             if ($_ -is [xml]) {
                 applyStylesheetToXml $_
