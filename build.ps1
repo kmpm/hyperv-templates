@@ -2,10 +2,13 @@
 
 param (
     [Parameter(Mandatory=$true)]
-    [string]$flavour
+    [string]$flavour,
 
-    # [string]$variables
+    [Parameter(ValueFromRemainingArguments=$true)]
+    [string[]]$remaining
 )
+
+Import-Module -Name .\utils -Verbose
 
 $flavoursFolder = '.\flavours'
 $flavourFile = Join-Path -Path $flavoursFolder -ChildPath "$($flavour).ps1"
@@ -26,4 +29,7 @@ if (-Not (Test-Path $buildDir)) {
 #     $variables=Null
 # }
 
-& $flavourFile $PSScriptRoot $buildDir
+$switch_name = Get-DefaultSwitchName
+$env:DEFAULT_SWITCH_NAME=$switch_name
+
+& $flavourFile $PSScriptRoot $buildDir @remaining

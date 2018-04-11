@@ -2,13 +2,17 @@ param (
     [Parameter(Mandatory=$true)]
     [string]$projRoot=$(Read-Host -Prompt "Provide path project root"),
     [Parameter(Mandatory=$true)]
-    [string]$buildDir=$(Read-Host -Prompt "Provide path to build folder")
+    [string]$buildDir=$(Read-Host -Prompt "Provide path to build folder"),
+
+    [Parameter(ValueFromRemainingArguments=$true)]
+    [string[]]$userVariables
 )
 
 $winbase = Join-Path -Resolve $projRoot "win"
 
 $isoFolder = Join-Path $buildDir "answer-iso"
 $outputFile = Join-Path $buildDir "answer.iso"
+
 
 Write-Host "Cleaning up any temporary files from previous run..."
 if (test-path $isoFolder){
@@ -55,5 +59,6 @@ if (-Not (test-path $outputFile)) {
     exit 123
 }
 
+
 Write-Host 'Running Packer'
-& packer build -var-file='my-variables.json' -var build_dir=$buildDir -var base_dir=$winbase --force $winbase\server2016_1_base.json
+& packer build @userVariables -var-file='my-variables.json' -var build_dir=$buildDir -var base_dir=$winbase --force $winbase\server2016_1_base.json
