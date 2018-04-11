@@ -17,13 +17,21 @@ function Set-XslTransform {
     )
     BEGIN {
         Set-StrictMode -Version Latest
+
+        function generateArguments() {
+            $xargs = New-Object System.Xml.Xsl.XsltArgumentList;
+            # $xargs.AddParam('productKey', '', 'ABC-123')
+            $xargs.AddParam('inputLocale', '', 'sv-SE')
+            $xargs.AddParam('userLocale', '', 'sv-SE')
+            return $xargs
+        }
+
         function applyStylesheetToXml([xml]$xml) {
             Write-Verbose "Applying Stylesheet"
             $xslt_settings = New-Object System.Xml.Xsl.XsltSettings;
             $XmlUrlResolver = New-Object System.Xml.XmlUrlResolver;
             $xslt_settings.EnableScript = 1;
-            $xargs = New-Object System.Xml.Xsl.XsltArgumentList;
-            $xargs.AddParam('productKey', '', 'ABC-123')
+            $xargs = generateArguments
 
             $xslt = New-Object System.Xml.Xsl.XslCompiledTransform
 
@@ -39,10 +47,8 @@ function Set-XslTransform {
             $xslt_settings = New-Object System.Xml.Xsl.XsltSettings;
             $XmlUrlResolver = New-Object System.Xml.XmlUrlResolver;
             $xslt_settings.EnableScript = 1;
-            $xargs = New-Object System.Xml.Xsl.XsltArgumentList;
-            $xargs.AddParam('productKey', '', 'ABC-123')
-            $xargs.AddParam('inputLocale', '', 'sv-SE')
-            $xargs.AddParam('userLocale', '', 'sv-SE')
+            $xargs = generateArguments
+            
 
             $xslt = New-Object System.Xml.Xsl.XslCompiledTransform
             $xslt.Load($xsl,$xslt_settings,$XmlUrlResolver);
